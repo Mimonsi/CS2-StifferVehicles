@@ -36,6 +36,18 @@ namespace StifferVehicles
             set => StiffnessSystem.Instance.UpdateEntities();
         }
 
+        [SettingsUIButton]
+        public bool ResetToDefault
+        {
+            set
+            {
+                SetDefaults();
+                StiffnessSystem.Instance.UpdateEntities();
+            }
+
+        }
+
+
         public override void SetDefaults()
         {
             HiddenSetting = true;
@@ -83,7 +95,13 @@ namespace StifferVehicles
                 {
                     m_Setting.GetOptionDescLocaleID(nameof(Setting.ApplyModifier)),
                     "Apply the modifiers to all vehicles."
-                }
+                },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetToDefault)), "Reset to Default" },
+                {
+                    m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetToDefault)),
+                    "Reset the modifiers to the default values."
+                },
             };
         }
 
