@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Colossal.Logging;
 using Colossal.Serialization.Entities;
 using Game;
@@ -49,11 +50,8 @@ namespace StifferVehicles
 
         public void UpdateEntities()
         {
-            bool isVanillaStiffnessesEmpty = VanillaStiffnesses == null || VanillaStiffnesses.Count == 0;
-            if (isVanillaStiffnessesEmpty)
-            {
+            if (VanillaStiffnesses == null || VanillaStiffnesses.Count == 0)
                 VanillaStiffnesses = new Dictionary<string, SwayingData>();
-            }
             EntityQueryDesc desc = new EntityQueryDesc
             {
                 Any =
@@ -65,26 +63,38 @@ namespace StifferVehicles
             var entities = query.ToEntityArray(Allocator.Temp);
             foreach (var entity in entities)
             {
-                if (EntityManager.HasComponent<SwayingData>(entity))
+                try
                 {
-                    var prefabName = prefabSystem.GetPrefabName(entity);
-                    var data = EntityManager.GetComponentData<SwayingData>(entity);
-                    if (isVanillaStiffnessesEmpty)
+                    if (EntityManager.HasComponent<SwayingData>(entity))
                     {
-                        var dataCopy = new SwayingData()
+                        var prefabName = prefabSystem.GetPrefabName(entity);
+                        var data = EntityManager.GetComponentData<SwayingData>(entity);
+                        if (!VanillaStiffnesses.ContainsKey(prefabName))
                         {
-                            m_VelocityFactors = data.m_VelocityFactors,
-                            m_SpringFactors = data.m_SpringFactors,
-                            m_DampingFactors = data.m_DampingFactors,
-                            m_MaxPosition = data.m_MaxPosition
-                        };
-                        VanillaStiffnesses.Add(prefabName, dataCopy);
+                            var dataCopy = new SwayingData()
+                            {
+                                m_VelocityFactors = data.m_VelocityFactors,
+                                m_SpringFactors = data.m_SpringFactors,
+                                m_DampingFactors = data.m_DampingFactors,
+                                m_MaxPosition = data.m_MaxPosition
+                            };
+                            VanillaStiffnesses.Add(prefabName, dataCopy);
+                        }
+
+                        data.m_SpringFactors = VanillaStiffnesses[prefabName].m_SpringFactors *
+                                               Setting.Instance.SpringModifier;
+                        data.m_DampingFactors = VanillaStiffnesses[prefabName].m_DampingFactors /
+                                                Setting.Instance.DampingModifier;
+                        data.m_MaxPosition =
+                            VanillaStiffnesses[prefabName].m_MaxPosition / Setting.Instance.MaxPosition;
+                        EntityManager.SetComponentData(entity, data);
+                        Logger.Info(
+                            $"Updated stiffness for {prefabName}: Spring {data.m_SpringFactors}, Damping {data.m_DampingFactors}, MaxPosition {data.m_MaxPosition}");
                     }
-                    data.m_SpringFactors = VanillaStiffnesses[prefabName].m_SpringFactors * Setting.Instance.SpringModifier;
-                    data.m_DampingFactors = VanillaStiffnesses[prefabName].m_DampingFactors / Setting.Instance.DampingModifier;
-                    data.m_MaxPosition = VanillaStiffnesses[prefabName].m_MaxPosition / Setting.Instance.MaxPosition;
-                    EntityManager.SetComponentData(entity, data);
-                    Logger.Info($"Updated stiffness for {prefabName}: Spring {data.m_SpringFactors}, Damping {data.m_DampingFactors}, MaxPosition {data.m_MaxPosition}");
+                }
+                catch (Exception x)
+                {
+                    Logger.Error("Error updating stiffness: " + x.Message);
                 }
             }
         }

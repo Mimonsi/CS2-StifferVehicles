@@ -2,7 +2,6 @@
 using Game;
 using Game.Modding;
 using Game.SceneFlow;
-using Game.SceneFlow;
 using Colossal.IO.AssetDatabase;
 
 namespace StifferVehicles
