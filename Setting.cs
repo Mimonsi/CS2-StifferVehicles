@@ -21,19 +21,17 @@ namespace StifferVehicles
         [SettingsUIHidden]
         public bool HiddenSetting { get; set; }
 
-        [SettingsUISlider(min=0.25f, max=10f, step=0.25f, unit=Unit.kFloatTwoFractions, scalarMultiplier = 1f)]
-        public float SpringModifier { get; set; }= 1.75f;
 
-        [SettingsUISlider(min=0.25f, max=10f, step=0.25f, unit=Unit.kFloatTwoFractions, scalarMultiplier = 1f)]
-        public float DampingModifier { get; set; }= 1.75f;
-
-        [SettingsUISlider(min=0.25f, max=10f, step=0.25f, unit=Unit.kFloatTwoFractions, scalarMultiplier = 1f)]
-        public float MaxPosition { get; set; }= 1.75f;
-
-        [SettingsUIButton]
-        public bool ApplyModifier
+        private float _stiffnessModifier = 3f;
+        [SettingsUISlider(min = 0.00f, max = 10f, step = 0.25f, unit = Unit.kFloatTwoFractions, scalarMultiplier = 1f)]
+        public float StiffnessModifier
         {
-            set => StiffnessSystem.Instance.UpdateEntities();
+            get => _stiffnessModifier;
+            set
+            {
+                _stiffnessModifier = value;
+                StiffnessSystem.Instance.UpdateEntities();
+            }
         }
 
         [SettingsUIButton]
@@ -44,16 +42,13 @@ namespace StifferVehicles
                 SetDefaults();
                 StiffnessSystem.Instance.UpdateEntities();
             }
-
         }
 
 
         public override void SetDefaults()
         {
             HiddenSetting = true;
-            SpringModifier = 1.75f;
-            DampingModifier = 1.75f;
-            MaxPosition = 1.75f;
+            StiffnessModifier = 3f;
         }
     }
 
@@ -73,28 +68,10 @@ namespace StifferVehicles
             {
                 { m_Setting.GetSettingsLocaleID(), "Stiffer Vehicles" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SpringModifier)), "Spring Modifier" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.StiffnessModifier)), "Stiffness Modifier" },
                 {
-                    m_Setting.GetOptionDescLocaleID(nameof(Setting.SpringModifier)),
-                    $"The Spring modifier for all vehicles. Vanilla is 1.0, Default for Mod is 1.75 Higher values make vehicles stiffer, lower values make vehicles more bouncy and leaning into the curves."
-                },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DampingModifier)), "Damping Modifier" },
-                {
-                    m_Setting.GetOptionDescLocaleID(nameof(Setting.DampingModifier)),
-                    $"The damping modifier for all vehicles. Vanilla is 1.0, Default for Mod is 2.0 Higher values make vehicles stiffer, lower values make vehicles more bouncy and leaning into the curves."
-                },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MaxPosition)), "Max Position Modifier" },
-                {
-                    m_Setting.GetOptionDescLocaleID(nameof(Setting.MaxPosition)),
-                    $"The Max Position modifier for all vehicles. Vanilla is 1.0, Default for Mod is 1.75 Higher values make vehicles lean less, but it might look harsher."
-                },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ApplyModifier)), "Apply Modifier" },
-                {
-                    m_Setting.GetOptionDescLocaleID(nameof(Setting.ApplyModifier)),
-                    "Apply the modifiers to all vehicles."
+                    m_Setting.GetOptionDescLocaleID(nameof(Setting.StiffnessModifier)),
+                    $"The Max Position modifier for all vehicles. Vanilla is 1.0, Default for Mod is 3.0 Higher values makes vehicles lean less, but it might look harsher."
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetToDefault)), "Reset to Default" },
