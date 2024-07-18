@@ -24,7 +24,6 @@ namespace StifferVehicles
             m_Setting = new Setting(this);
             m_Setting.RegisterInOptionsUI();
             GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(m_Setting));
-            m_Setting.HiddenSetting = false;
 
             AssetDatabase.global.LoadSettings(nameof(StifferVehicles), m_Setting, new Setting(this));
             Setting.Instance = m_Setting;

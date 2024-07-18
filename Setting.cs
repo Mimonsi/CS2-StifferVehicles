@@ -18,9 +18,6 @@ namespace StifferVehicles
 
         }
 
-        [SettingsUIHidden]
-        public bool HiddenSetting { get; set; }
-
 
         private float _stiffnessModifier = 3f;
         [SettingsUISlider(min = 0.00f, max = 10f, step = 0.25f, unit = Unit.kFloatTwoFractions, scalarMultiplier = 1f)]
@@ -30,7 +27,21 @@ namespace StifferVehicles
             set
             {
                 _stiffnessModifier = value;
-                StiffnessSystem.Instance.UpdateEntities();
+                if (StiffnessSystem.Instance != null)
+                    StiffnessSystem.Instance.UpdateEntities();
+            }
+        }
+
+        private float _dampingModifier = 1f;
+        [SettingsUISlider(min = 0.00f, max = 10f, step = 0.25f, unit = Unit.kFloatTwoFractions, scalarMultiplier = 1f)]
+        public float DampingModifier
+        {
+            get => _dampingModifier;
+            set
+            {
+                _dampingModifier = value;
+                if (StiffnessSystem.Instance != null)
+                    StiffnessSystem.Instance.UpdateEntities();
             }
         }
 
@@ -40,15 +51,16 @@ namespace StifferVehicles
             set
             {
                 SetDefaults();
-                StiffnessSystem.Instance.UpdateEntities();
+                if (StiffnessSystem.Instance != null)
+                    StiffnessSystem.Instance.UpdateEntities();
             }
         }
 
 
         public override void SetDefaults()
         {
-            HiddenSetting = true;
             StiffnessModifier = 3f;
+            DampingModifier = 1f;
         }
     }
 
@@ -72,6 +84,12 @@ namespace StifferVehicles
                 {
                     m_Setting.GetOptionDescLocaleID(nameof(Setting.StiffnessModifier)),
                     $"The Max Position modifier for all vehicles. Vanilla is 1.0, Default for Mod is 3.0 Higher values makes vehicles lean less, but it might look harsher."
+                },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DampingModifier)), "Damping Modifier" },
+                {
+                    m_Setting.GetOptionDescLocaleID(nameof(Setting.DampingModifier)),
+                    $"The Damping modifier for all vehicles. Vanilla is 1.0, Default for Mod is 2.0 Higher values makes vehicles bounce more. Low values are stiffer."
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetToDefault)), "Reset to Default" },

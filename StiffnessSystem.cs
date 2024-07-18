@@ -37,6 +37,7 @@ namespace StifferVehicles
             };
             query = GetEntityQuery(desc);
             prefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
+            UpdateEntities();
         }
 
         protected override void OnGameLoadingComplete(Purpose purpose, GameMode mode)
@@ -81,8 +82,8 @@ namespace StifferVehicles
                             VanillaStiffnesses.Add(prefabName, dataCopy);
                         }
 
-                        data.m_MaxPosition =
-                            VanillaStiffnesses[prefabName].m_MaxPosition / Setting.Instance.StiffnessModifier;
+                        data.m_MaxPosition = VanillaStiffnesses[prefabName].m_MaxPosition / Setting.Instance.StiffnessModifier;
+                        data.m_DampingFactors = VanillaStiffnesses[prefabName].m_DampingFactors * Setting.Instance.DampingModifier;
                         EntityManager.SetComponentData(entity, data);
                         Logger.Info(
                             $"Updated stiffness for {prefabName}: Spring {data.m_SpringFactors}, Damping {data.m_DampingFactors}, MaxPosition {data.m_MaxPosition}");
