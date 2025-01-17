@@ -32,7 +32,7 @@ namespace StifferVehicles
             }
         }
 
-        private float _dampingModifier = 1f;
+        private float _dampingModifier = 2f;
         [SettingsUISlider(min = 0.00f, max = 10f, step = 0.25f, unit = Unit.kFloatTwoFractions, scalarMultiplier = 1f)]
         public float DampingModifier
         {

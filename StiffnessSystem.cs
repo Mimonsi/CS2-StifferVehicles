@@ -45,7 +45,7 @@ namespace StifferVehicles
             base.OnGameLoadingComplete(purpose, mode);
             if (mode == GameMode.MainMenu)
             {
-                UpdateEntities();
+                //UpdateEntities();
             }
         }
 
@@ -79,13 +79,15 @@ namespace StifferVehicles
                                 m_DampingFactors = data.m_DampingFactors,
                                 m_MaxPosition = data.m_MaxPosition
                             };
+                            Logger.Debug(
+                                $"Saving vanilla stiffness for {prefabName}: Spring {data.m_SpringFactors}, Damping {data.m_DampingFactors}, MaxPosition {data.m_MaxPosition}");
                             VanillaStiffnesses.Add(prefabName, dataCopy);
                         }
 
                         data.m_MaxPosition = VanillaStiffnesses[prefabName].m_MaxPosition / Setting.Instance.StiffnessModifier;
                         data.m_DampingFactors = VanillaStiffnesses[prefabName].m_DampingFactors * Setting.Instance.DampingModifier;
                         EntityManager.SetComponentData(entity, data);
-                        Logger.Info(
+                        Logger.Debug(
                             $"Updated stiffness for {prefabName}: Spring {data.m_SpringFactors}, Damping {data.m_DampingFactors}, MaxPosition {data.m_MaxPosition}");
                     }
                 }
