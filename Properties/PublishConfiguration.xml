@@ -33,7 +33,8 @@ Feel free to change the value to whatever value you personally prefer.
 - Remove unneeded assemblies
 	</ChangeLog>
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
-	<ExternalLink Type="github" Url="https://github.com/kosch104/CS2-StifferVehicles" />
+	<ExternalLink Type="github" Url="https://github.com/Mimonsi/CS2-StifferVehicles" />
 	<ExternalLink Type="discord" Url="https://discord.gg/vd7HXnpPJf" />
 	<ExternalLink Type="paypal" Url="https://www.paypal.com/paypalme/KonstantinSchwarze" />
+	<ExternalLink Type="ko-fi" Url="https://ko-fi.com/mimonsi" />
 </Publish>
